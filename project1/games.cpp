@@ -2,14 +2,79 @@
 #include <iostream>
 #include "main.h"
 #include <chrono>
+#include <random>
 #include <thread>
 #include <bits/stdc++.h>
 
 
+int play_horsebetting(int balance) {
+    srand((unsigned int)time(NULL));
+    std::cout << "Welcome to the slots!\n";
+    std::cout << "You have " << balance << " dollars.\n";
+
+    if (balance == 0) {
+        std::cout << "You're poor lol\n";
+        std::cout << "Do you want to beg?(y/n)\n";
+        std::string begChoice;
+        std::cin >> begChoice;
+        if (begChoice == "y") {
+            balance += beg();
+        }
+    }
+    std::cout << "How much would you like to bet?\n";
+    int bet;
+    std::cin >> bet;
+    if (bet > balance) {
+        std::cout << "You're too poor!\n";
+        return balance;
+    }
+
+    balance -= bet;
+
+    std::array<std::string, 21> horseNames = {
+        "Thunderbolt",
+        "Lightning Strike",
+        "Midnight Shadow",
+        "Golden Gallop",
+        "Silver Streak",
+        "Velvet Dreamer",
+        "Firefly Blaze",
+        "Moonbeam Rider",
+        "Starry Night",
+        "Whispering Wind",
+        "Wildfire",
+        "Shadow Dancer",
+        "Dreamcatcher",
+        "Sunburst Sprinter",
+        "Mystic Mirage",
+        "Rolling Thunder",
+        "Aurora Borealis",
+        "Meadow Majesty",
+        "Swift Spirit",
+        "Dream Weaver",
+        "Tripod"
+    };
+
+    // Shuffle the horseNames array
+    std::shuffle(horseNames.begin(), horseNames.end(), std::mt19937(std::random_device()()));
+
+    // Get the first five random horses
+    std::array<std::string, 5> selectedHorses;
+    std::copy(horseNames.begin(), horseNames.begin() + 5, selectedHorses.begin());
+
+    // Print the selected horses
+    std::cout << "Selected horses:\n";
+    for (const auto& horse : selectedHorses) {
+        std::cout << horse << std::endl;
+    }
+
+
+}
 
 
 
 int play_slots(int balance) {
+    srand((unsigned int)time(NULL));
     std::cout << "Welcome to the slots!\n";
     std::cout << "You have " << balance << " dollars.\n";
 
@@ -46,7 +111,6 @@ int play_slots(int balance) {
     } else {
         std::cout << "You lose!\n";
     }
-
     std::string playAgain;
     std::cout << "Would you like to play again? (y/n)\n";
     std::cin >> playAgain;
@@ -60,25 +124,16 @@ int play_slots(int balance) {
                 balance += beg();
             }
         }
-        return play_roulette(balance);
+        return play_slots(balance);
     } else {
-        int option;
-        std::cout << "What would you like to do?\n";
-        std::cout << "1. Exit\n";
-        std::cout << "2. Play a game\n";
-        std::cout << "3. Check balance\n";
-        std::cin >> option;
-        options(option);
-    }
-    {
         return balance;
     }
 
 }
 
 int play_roulette(int balance) {
+    srand((unsigned int)time(NULL));
     std::cout << "Welcome to the roulette table!\n";
-    std::cout << "You have " << balance << " dollars.\n";
     std::cout << "You have " << balance << " dollars.\n";
 
     if (balance == 0) {
@@ -93,7 +148,6 @@ int play_roulette(int balance) {
     int bet;
 
 
-    int possible_wins[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36};
     std::vector<int> red{1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36};
     std::vector<int> black{2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35};
     int green_nums[] = {0, 00};
@@ -179,21 +233,13 @@ int play_roulette(int balance) {
         }
         return play_roulette(balance);
     } else {
-        int option;
-        std::cout << "What would you like to do?\n";
-        std::cout << "1. Exit\n";
-        std::cout << "2. Play a game\n";
-        std::cout << "3. Check balance\n";
-        std::cin >> option;
-        options(option);
-    }
-    {
         return balance;
     }
 }
 
 
 int play_blackjack(int balance) {
+    srand((unsigned int)time(NULL));
     int dealerhand;
     int playerhand;
     std::cout << "Welcome to the blackjack table!\n";
@@ -275,14 +321,15 @@ int play_blackjack(int balance) {
     std::cout << "You have a " << card1 << " and a " << card2 << " for a total of " << playerhand << "\n";
     std::cout << "The dealer has a " << dealercard1 << " showing, and a hidden card.\n";
 
-    int play_choice;
-    bool split = false;
+    int play_choice = 0;
     bool busted = false;
     bool playing = true;
 
-    std::cout << "Would you like to hit, stand, or split? (1,2,3)\n";
-    std::cin >> play_choice;
+
     while (playing) {
+        play_choice = 0;
+        std::cout << "Would you like to hit or stand? (1,2)\n";
+        std::cin >> play_choice;
         switch(play_choice) {
             case 1:
                 std::cout << "You chose to hit!\n";
@@ -299,9 +346,11 @@ int play_blackjack(int balance) {
             std::cout << "You drew a " << new_card << " for a total of " << playerhand << "\n";
             if (playerhand > 21) {
                 std::cout << "You busted! You lose.\n";
+                playing = false;
                 return balance;
+            } else {
+                break;
             }
-            break;
             case 2:
                 std::cout << "You chose to stand!\n";
             if (dealerhand < 17) {
@@ -320,35 +369,39 @@ int play_blackjack(int balance) {
                 if (dealerhand > 21) {
                     std::cout << "The dealer busted! You win!\n";
                     balance += bet * 2;
+                    playing = false;
                     return balance;
                 }
                 if (playerhand > dealerhand) {
                     std::cout << "You win!\n";
                     balance += bet * 2;
+                    playing = false;
                     return balance;
                 } else if (playerhand == dealerhand) {
                     std::cout << "You push.\n";
                     balance += bet;
+                    playing = false;
                     return balance;
                 } else {
                     std::cout << "You lose.\n";
+                    playing = false;
                     return balance;
                 }
             }
-            case 3:
-                std::cout << "You chose to split!\n";
-            split = true;
-            std::cout << "work in progress\n";
             break;
+            default:
+                std::cout << "invalid operatnino\n";
+                break;
 
         }
     }
+}
 
 
 
 
 
-    //game end
+    /* game end
     std::string playAgain;
     std::cout << "Would you like to play again? (y/n)\n";
     std::cin >> playAgain;
@@ -364,15 +417,6 @@ int play_blackjack(int balance) {
         }
         return play_roulette(balance);
     } else {
-        int option;
-        std::cout << "What would you like to do?\n";
-        std::cout << "1. Exit\n";
-        std::cout << "2. Play a game\n";
-        std::cout << "3. Check balance\n";
-        std::cin >> option;
-        options(option);
-    }
-    {
         return balance;
     }
-}
+    */

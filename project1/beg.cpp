@@ -1,20 +1,25 @@
 #include <iostream>
+#include <chrono>
+#include <thread>
+#include <bits/stdc++.h>
+
 
 //i love gambling!
 int chance = rand() % 100;
 
 int beg() {
+    srand((unsigned int)time(NULL));
     std::cout << "How do you want to beg?\n";
     std::cout << "1. On a street corner\n";
     std::cout << "2. Grandparents\n";
     std::cout << "3. Parents\n";
     std::cout << "4. Friends\n";
+    std::cout << "5. Russian Roulette\n";
     int choice;
 
     std::cin >> choice;
 
     switch (choice) {
-
         case 1:
             if (chance > 75 && chance < 90)
             {
@@ -66,6 +71,20 @@ int beg() {
                 std::cout << "no friend lol!\n";
             } else {
                 std::cout << "your friends are poor, no moeny\n";
+            }
+        case 5:
+            std::cout << "you go literally all in\n";
+            //sleep to simulate gambling
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::cout << "you meet with the russian mob\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            if (rand() % 100 < 50) {
+                std::cout << "you died lol\n";
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                std::terminate();
+            } else {
+                std::cout << "holy moly your a gazillionair +10000000000";
+                return 1000000000;
             }
 
         default:
