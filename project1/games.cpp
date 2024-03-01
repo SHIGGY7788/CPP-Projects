@@ -5,10 +5,11 @@
 #include <random>
 #include <thread>
 #include <bits/stdc++.h>
+#include <ctime>
 
 
 int play_horsebetting(int balance) {
-    srand((unsigned int)time(NULL));
+    srand(time(0));
     std::cout << "Welcome to the slots!\n";
     std::cout << "You have " << balance << " dollars.\n";
 
@@ -63,10 +64,41 @@ int play_horsebetting(int balance) {
     std::copy(horseNames.begin(), horseNames.begin() + 5, selectedHorses.begin());
 
     // Print the selected horses
-    std::cout << "Selected horses:\n";
+
+    std::cout << "Horses racing today:\n";
     for (const auto& horse : selectedHorses) {
         std::cout << horse << std::endl;
     }
+
+    // Get the user's horse choice
+    std::string userHorse;
+    std::cout << "Which horse would you like to bet on?\n";
+    std::cin >> userHorse;
+
+    // text to simulate horses racing
+    std::cout << "The horses are off!\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::cout << "The horses are rounding the first turn!\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::cout << "The horses are rounding the final turn!\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::cout << "The horses are coming down the final stretch!\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::cout << "And the winner is...\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    const std::string winner = selectedHorses[rand() % 5];
+    std::cout << winner << "!\n";
+
+
+    // if the user's horse wins
+    if (userHorse == winner) {
+        std::cout << "You win " << bet * 5 << " dollars!\n";
+        balance += bet * 5;
+    } else {
+        std::cout << "You lose!\n";
+    }
+
+
 
 
 }
@@ -74,7 +106,7 @@ int play_horsebetting(int balance) {
 
 
 int play_slots(int balance) {
-    srand((unsigned int)time(NULL));
+    srand(time(0));
     std::cout << "Welcome to the slots!\n";
     std::cout << "You have " << balance << " dollars.\n";
 
@@ -132,7 +164,7 @@ int play_slots(int balance) {
 }
 
 int play_roulette(int balance) {
-    srand((unsigned int)time(NULL));
+    srand(time(0));
     std::cout << "Welcome to the roulette table!\n";
     std::cout << "You have " << balance << " dollars.\n";
 
@@ -239,7 +271,7 @@ int play_roulette(int balance) {
 
 
 int play_blackjack(int balance) {
-    srand((unsigned int)time(NULL));
+    srand(time(0));
     int dealerhand;
     int playerhand;
     std::cout << "Welcome to the blackjack table!\n";
