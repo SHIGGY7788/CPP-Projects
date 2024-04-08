@@ -6,6 +6,7 @@
 #include <thread>
 #include <bits/stdc++.h>
 #include <ctime>
+#include <numeric>
 
 
 int play_horsebetting(int balance) {
@@ -306,52 +307,54 @@ int play_blackjack(int balance) {
 
     std::cout << "Dealing cards...\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    int card1;
-    int card2;
-    int dealercard1;
-    int dealercard2;
+    int playercards[5]; //player cards
+    int dealercards[5]; //dealer cards
 
     //player first card
     if (rand() % 100 < face_card_chance) {
-        card1 = face_cards[rand() % 4];
+        playercards[0] = face_cards[rand() % 4];
     } else if (rand() % 100 < num_card_chance) {
-        card1 = num_cards[rand() % 9];
+        playercards[0] = num_cards[rand() % 9];
     } else {
-        card1 = ace[rand() % 2];
+        playercards[0] = ace[rand() % 2];
     }
 
     //dealer first card
     if (rand() % 100 < face_card_chance) {
-        dealercard1 = face_cards[rand() % 4];
+        dealercards[0] = face_cards[rand() % 4];
     } else if (rand() % 100 < num_card_chance) {
-        dealercard1 = num_cards[rand() % 9];
+        dealercards[0] = num_cards[rand() % 9];
     } else {
-        dealercard1 = ace[rand() % 2];
+        dealercards[0] = ace[rand() % 2];
     }
 
     //player second card
     if (rand() % 100 < face_card_chance) {
-        card2 = face_cards[rand() % 4];
+        playercards[1] = face_cards[rand() % 4];
     } else if (rand() % 100 < num_card_chance) {
-        card2 = num_cards[rand() % 9];
+        playercards[1] = num_cards[rand() % 9];
     } else {
-        card2 = ace[rand() % 2];
+        playercards[1] = ace[rand() % 2];
     }
 
     //Dealer second card
     if (rand() % 100 < face_card_chance) {
-        dealercard2 = face_cards[rand() % 4];
+        dealercards[2] = face_cards[rand() % 4];
     } else if (rand() % 100 < num_card_chance) {
-        dealercard2 = num_cards[rand() % 9];
+        dealercards[2] = num_cards[rand() % 9];
     } else {
-        dealercard2 = ace[rand() % 2];
+        dealercards[2] = ace[rand() % 2];
     }
 
-    playerhand = card1 + card2;
-    dealerhand = dealercard1 + dealercard2;
+    playerhand = 0;
+    for (auto& num : playercards)
+        playerhand += num;
+    dealerhand = 0;
+    for (auto& num : dealercards)
+        dealerhand += num;
 
-    std::cout << "You have a " << card1 << " and a " << card2 << " for a total of " << playerhand << "\n";
-    std::cout << "The dealer has a " << dealercard1 << " showing, and a hidden card.\n";
+    std::cout << "You have a " << playercards[0] << " and a " << playercards[1] << " for a total of " << playerhand << "\n";
+    std::cout << "The dealer has a " << dealercards[0] << " showing, and a hidden card.\n";
 
     int play_choice = 0;
     bool busted = false;
@@ -366,16 +369,17 @@ int play_blackjack(int balance) {
             case 1:
                 std::cout << "You chose to hit!\n";
             // Get random card and add to player hand
-            int new_card;
             if (rand() % 100 < face_card_chance) {
-                new_card = face_cards[rand() % 4];
+                playercards[2] = face_cards[rand() % 4];
             } else if (rand() % 100 < num_card_chance) {
-                new_card = num_cards[rand() % 9];
+                playercards[2] = num_cards[rand() % 9];
             } else {
-                new_card = ace[rand() % 2];
+                playercards[2] = ace[rand() % 2];
             }
-            playerhand += new_card;
-            std::cout << "You drew a " << new_card << " for a total of " << playerhand << "\n";
+            playerhand = 0;
+            for (auto& num : playercards)
+                playerhand += num;
+            std::cout << "You drew a " << playercards[2] << " for a total of " << playerhand << "\n";
             if (playerhand > 21) {
                 std::cout << "You busted! You lose.\n";
                 playing = false;
@@ -388,16 +392,32 @@ int play_blackjack(int balance) {
             if (dealerhand < 17) {
                 std::cout << "The dealer hits...\n";
                 std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                int new_card;
                 if (rand() % 100 < face_card_chance) {
-                    new_card = face_cards[rand() % 4];
+                    dealercards[2] = face_cards[rand() % 4];
                 } else if (rand() % 100 < num_card_chance) {
-                    new_card = num_cards[rand() % 9];
+                    dealercards[2] = num_cards[rand() % 9];
                 } else {
-                    new_card = ace[rand() % 2];
+                    dealercards[2] = ace[rand() % 2];
                 }
-                dealerhand += new_card;
-                std::cout << "The dealer drew a " << new_card << " for a total of " << dealerhand << "\n";
+                dealerhand = 0;
+                for (auto& num : dealercards)
+                    dealerhand += num;
+                std::cout << "The dealer drew a " << dealercards[2] << " for a total of " << dealerhand << "\n";
+                if (dealerhand < 17) {
+                    std::cout << "The dealer hits again...\n";
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                    if (rand() % 100 < face_card_chance) {
+                        dealercards[3] = face_cards[rand() % 4];
+                    } else if (rand() % 100 < num_card_chance) {
+                        dealercards[3] = num_cards[rand() % 9];
+                    } else {
+                        dealercards[3] = ace[rand() % 2];
+                    }
+                    dealerhand = 0;
+                    for (auto& num : dealercards)
+                        dealerhand += num;
+                    std::cout << "The dealer drew a " << dealercards[3] << " for a total of " << dealerhand << "\n";
+                }
                 if (dealerhand > 21) {
                     std::cout << "The dealer busted! You win!\n";
                     balance += bet * 2;
@@ -425,6 +445,23 @@ int play_blackjack(int balance) {
                 std::cout << "invalid operatnino\n";
                 break;
 
+        }
+        std::string playAgain;
+        std::cout << "Would you like to play again? (y/n)\n";
+        std::cin >> playAgain;
+        if (playAgain == "y") {
+            if (balance == 0) {
+                std::cout << "You're poor lol\n";
+                std::cout << "Do you want to beg?(y/n)\n";
+                std::string begChoice;
+                std::cin >> begChoice;
+                if (begChoice == "y") {
+                    balance += beg();
+                }
+            }
+            return play_blackjack(balance);
+        } else {
+            return balance;
         }
     }
 }
